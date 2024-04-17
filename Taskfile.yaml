@@ -1,0 +1,23 @@
+version: 3
+
+dotenv:
+  - ".iperf-version"
+
+tasks:
+  build-image:
+    desc: Builds the Docker image
+    cmd: docker build -t pmoscode/iperf3:$VERSION -t pmoscode/iperf3:latest --build-arg VERSION=$VERSION .
+
+  push-to-hub:
+    desc: Pushes the image to Docker-hub
+    cmds:
+    - docker push pmoscode/iperf3:$VERSION
+    - docker push pmoscode/iperf3:latest
+
+  run-local:
+    desc: Runs a local instance
+    cmd: docker run -it -p 5201:5201 iperf3
+
+  get-iperf3-verion:
+    desc: Shows the latest iperf3 version in the alpine image
+    cmd: docker run -it alpine:3.19 sh -c "apk update && apk search iperf3" | grep iperf3 | head -n 1
